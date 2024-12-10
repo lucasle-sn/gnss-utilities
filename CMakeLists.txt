@@ -12,6 +12,13 @@ if(gnss-utilities_TESTING_ENABLED)
   enable_testing()
 endif()
 
+message(STATUS "Enable testing")
+enable_testing()
+
+add_subdirectory(third_party/project-cpp)
+add_subdirectory(gnss_utilities)
+add_subdirectory(tools)
+
 # Doxygen setup
 if (gnss-utilities_DOXYGEN_BUILD_ENABLED)
   message(STATUS "gnss-utilities doxygen build enabled")
