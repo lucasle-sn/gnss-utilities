@@ -1,0 +1,57 @@
+name: Build Pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - '*'
+
+env:
+  DOCKER_BUILDIMAGE_WORKDIR: /mnt/workspace
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        distro: [ubuntu-24.04]
+        compiler: [
+          { c: "gcc-11", cxx: "g++-11" },
+          { c: "clang-14", cxx: "clang++-14" }
+        ]
+    runs-on: ubuntu-latest
+    name: Build ${{ matrix.distro }} / ${{ matrix.compiler.cxx }}
+    timeout-minutes: 30
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          submodules: recursive
+
+      - name: Build docker image ${{ matrix.distro }}
+        run: |
+          if [[ "${{ matrix.distro }}" == "ubuntu-24.04" ]]; then
+            export DOCKERFILE=docker/Dockerfile.ubuntu2404
+          else
+            exit 1
+          fi
+          export DOCKER_BUILDIMAGE=gnss-utilities-${{ matrix.distro }}
+          docker build -t $DOCKER_BUILDIMAGE:latest -f $DOCKERFILE .
+
+      - name: Build & Test
+        run: |
+          export DOCKER_BUILDIMAGE=gnss-utilities-${{ matrix.distro }}
+          buildTypes=("debug" "release")
+          for buildType in "${buildTypes[@]}"; do
+            export BUILD_DIRECTORY=build/$buildType
+            docker run --rm -v $(pwd):${{ env.DOCKER_BUILDIMAGE_WORKDIR }} $DOCKER_BUILDIMAGE:latest sh -c " \
+              cmake -S . -B $BUILD_DIRECTORY \
+                -DCMAKE_BUILD_TYPE=$buildType \
+                -DCMAKE_C_COMPILER=${{ matrix.compiler.c }} \
+                -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }}
+              cmake --build $BUILD_DIRECTORY -j10
+              cd $BUILD_DIRECTORY && ctest -j8 -T test --no-compress-output
+            "
+          done
