@@ -15,7 +15,7 @@ endif()
 message(STATUS "Enable testing")
 enable_testing()
 
-add_subdirectory(third_party/project-cpp)
+add_subdirectory(third_party/libcore)
 add_subdirectory(gnss_utilities)
 add_subdirectory(tools)
 
