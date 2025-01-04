@@ -1,9 +1,9 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <memory>
 
 #include <utilities/log.h>
-#include <memory>
 
 #include <gnss_utilities/ntrip_client.h>
 
@@ -26,7 +26,8 @@ int main(int argc, char **args) {
     return 1;
   }
 
-  // qle::Logger::set_log_level(qle::LogLevel::DEBUG);
+  auto logger_cfg =
+      std::make_unique<qle::LoggerConfigHandler>(qle::LogLevel::DEBUG);
   const char *host = args[1];
   const char *mountpoint = args[2];
   const char *username = args[3];
