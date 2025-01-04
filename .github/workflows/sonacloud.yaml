@@ -15,7 +15,7 @@ env:
 jobs:
   sonar-cloud:
     name: Sonarcloud Analysis
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 30
     env:
       BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory
@@ -35,8 +35,8 @@ jobs:
       - name: Run build-wrapper
         run: |
           cmake -S . -B ${{ env.BUILD_DIRECTORY }} \
-            -DCMAKE_C_COMPILER=gcc-11 \
-            -DCMAKE_CXX_COMPILER=g++-11 \
+            -DCMAKE_C_COMPILER=gcc \
+            -DCMAKE_CXX_COMPILER=g++ \
             -DCODE_COVERAGE=ON \
             -DCMAKE_C_FLAGS=--coverage \
             -DCMAKE_CXX_FLAGS=--coverage
