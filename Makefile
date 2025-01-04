@@ -43,15 +43,15 @@ gen-doxygen:
 			-DCMAKE_BUILD_TYPE=debug \
 			-DCMAKE_C_COMPILER="clang" \
 			-DCMAKE_CXX_COMPILER="clang++" \
-			-DDOXYGEN_BUILD_ENABLED=ON
-	@cmake --build ${buildDir} --target doxygen -- --no-print-directory
+			-DGNSS_UTILITIES_DOXYGEN_BUILD_ENABLED=ON
+	@cmake --build ${buildDir} --target gnss-utilities-doxygen -- --no-print-directory
 	doxygen ${buildDir}/doxygen/Doxyfile
 
 do-clang-format-check:
-	@sh tools/check_clangformat.sh
+	@sh scripts/check_clangformat.sh
 
 do-clang-format-run:
-	@sh tools/run_clangformat.sh
+	@sh scripts/run_clangformat.sh
 
 clean:
 	@rm -rf ${BUILD_DIR_PARENT}
