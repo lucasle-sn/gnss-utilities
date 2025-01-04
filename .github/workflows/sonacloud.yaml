@@ -33,11 +33,13 @@ jobs:
         uses: SonarSource/sonarcloud-github-c-cpp@v2
 
       - name: Run build-wrapper
-        env:
-          CC: gcc-11
-          CXX: g++-11
         run: |
-          cmake -S . -B ${{ env.BUILD_DIRECTORY }} -DCODE_COVERAGE=ON -DCMAKE_C_FLAGS=--coverage -DCMAKE_CXX_FLAGS=--coverage
+          cmake -S . -B ${{ env.BUILD_DIRECTORY }} \
+            -DCMAKE_C_COMPILER=gcc-11 \
+            -DCMAKE_CXX_COMPILER=g++-11 \
+            -DCODE_COVERAGE=ON \
+            -DCMAKE_C_FLAGS=--coverage \
+            -DCMAKE_CXX_FLAGS=--coverage
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build ${{ env.BUILD_DIRECTORY }} -j10
 
       - name: Generate coverage information
