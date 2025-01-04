@@ -73,7 +73,7 @@ class NtripClient {
   /**
    * @brief Open an outstream
    */
-  virtual int openfd() noexcept;
+  virtual int open_outstream() noexcept;
 
   /**
    * @brief Write data to file descriptor
@@ -92,7 +92,7 @@ class NtripClient {
    * @param host Host
    * @param port Port
    */
-  int create_socket(const char *host, int port) noexcept;
+  int open_socket(const char *host, int port) noexcept;
 
   /**
    * @brief Send an NTRIP request
@@ -102,19 +102,18 @@ class NtripClient {
    * @param mountpoint Ntrip mountpoint
    * @param username Ntrip username
    * @param password Ntrip password
-   * @param user_agent User agent
    */
   bool send_request(int sockfd, const char *host, const char *mountpoint,
-                    const char *username, const char *password,
-                    const char *user_agent) noexcept;
+                    const char *username, const char *password) noexcept;
 
   /**
-   * @brief Forward data from socket file descriptor to a file descriptor
+   * @brief Forward data from socket file descriptor to an output file
+   * descriptor
    *
    * @param sockfd Socket file descriptor
-   * @param fd Output file descriptor
+   * @param outfd Output file descriptor
    */
-  void forward(int sockfd, int fd) noexcept;
+  void forward(int sockfd, int outfd) noexcept;
 
   const char *host_{nullptr};        ///< NTRIP host
   int32_t port_{2101};               ///< Port number
@@ -123,9 +122,8 @@ class NtripClient {
   const char *password_{nullptr};    ///< Password
   const char *outstream_{nullptr};   ///< Output
 
-  const char *cUserAgent_ = "NTRIP client/1.0";  ///< User agent
-  int sockfd_{};                                 ///< Socket file descriptor
-  int fd_{};                                     ///< Outpur file descriptor
+  int sockfd_{};  ///< Socket file descriptor
+  int outfd_{};   ///< Output file descriptor
 };
 
 }  // namespace qle

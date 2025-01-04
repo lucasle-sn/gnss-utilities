@@ -35,14 +35,14 @@ NtripClient::NtripClient(const char *host, int32_t port, const char *mountpoint,
       outstream_(outstream) {}
 
 bool NtripClient::init() noexcept {
-  sockfd_ = create_socket(host_, port_);
+  sockfd_ = open_socket(host_, port_);
   if (sockfd_ < 0) {
     logger->error("Fail to create socket");
     return false;
   }
 
-  fd_ = openfd();
-  if (fd_ < 0) {
+  outfd_ = open_outstream();
+  if (outfd_ < 0) {
     logger->error("Fail to open output stream");
     return false;
   }
@@ -51,18 +51,17 @@ bool NtripClient::init() noexcept {
 
 void NtripClient::deinit() noexcept {
   close(sockfd_);
-  close(fd_);
+  close(outfd_);
 }
 
 void NtripClient::run() noexcept {
-  if (send_request(sockfd_, host_, mountpoint_, username_, password_,
-                   cUserAgent_)) {
+  if (send_request(sockfd_, host_, mountpoint_, username_, password_)) {
     logger->debug("Connected to NTrip server");
-    forward(sockfd_, fd_);
+    forward(sockfd_, outfd_);
   }
 }
 
-int NtripClient::openfd() noexcept {
+int NtripClient::open_outstream() noexcept {
   if (outstream_ == nullptr) {
     return STDOUT_FILENO;
   }
@@ -78,7 +77,7 @@ ssize_t NtripClient::write_data(int fd, const char *buffer,
   return write(fd, buffer, length);
 }
 
-int NtripClient::create_socket(const char *host, int port) noexcept {
+int NtripClient::open_socket(const char *host, int port) noexcept {
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) {
     logger->error("Opening socket failed");
@@ -109,8 +108,7 @@ int NtripClient::create_socket(const char *host, int port) noexcept {
 
 bool NtripClient::send_request(int sockfd, const char *host,
                                const char *mountpoint, const char *username,
-                               const char *password,
-                               const char *user_agent) noexcept {
+                               const char *password) noexcept {
   char credential[1024]{};
   snprintf(credential, sizeof(credential), "%s:%s", username, password);
 
@@ -122,11 +120,11 @@ bool NtripClient::send_request(int sockfd, const char *host,
                               "GET /%s HTTP/1.1\r\n"
                               "Host: %s\r\n"
                               "Ntrip-Version: Ntrip/2.0\r\n"
-                              "User-Agent: %s\r\n"
+                              "User-Agent: NTRIP client/1.0\r\n"
                               "Authorization: Basic %s\r\n"
                               "\r\n",
-                              mountpoint, host, user_agent, credential_base64);
-  logger->debug("%s\n", request);
+                              mountpoint, host, credential_base64);
+  logger->debug("%s", request);
 
   if (send(sockfd, request, request_len, 0) < 0) {
     logger->error("Error sending request");
@@ -156,12 +154,12 @@ bool NtripClient::send_request(int sockfd, const char *host,
   return true;
 }
 
-void NtripClient::forward(int sockfd, int fd) noexcept {
+void NtripClient::forward(int sockfd, int outfd) noexcept {
   char buffer[4096]{};
   ssize_t bytes_received = 0;
 
   while ((bytes_received = recv(sockfd, buffer, sizeof(buffer), 0)) > 0) {
-    write_data(fd, buffer, bytes_received);
+    write_data(outfd, buffer, bytes_received);
   }
 
   if (bytes_received < 0) {
