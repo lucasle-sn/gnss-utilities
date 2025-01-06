@@ -6,9 +6,9 @@
 namespace qle {
 
 /**
- * @brief Encode data on Base64
+ * @brief Encodes ASCII string into base64 format string
  *
- * @param raw Raw datastream
+ * @param raw Plain ASCII string
  * @param len Length of raw datastream
  * @param out Output datastream
  */
