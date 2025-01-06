@@ -10,10 +10,9 @@ target_link_libraries(gnss-utilities
     PRIVATE utilities
 )
 
-
-# add_executable(unit-test-gnss-utilities
-#     test/test_ntrip_client.cc
-# )
-# target_link_libraries(unit-test-gnss-utilities
-#     PRIVATE gnss-utilities
-# )
+add_executable(unit-test-gnss-utilities
+    test/test_ntrip_client.cc
+)
+target_link_libraries(unit-test-gnss-utilities
+    PRIVATE gnss-utilities gtest
+)
