@@ -15,6 +15,7 @@ endif()
 message(STATUS "Enable testing")
 enable_testing()
 
+add_subdirectory(third_party/gtest)
 add_subdirectory(third_party/libcore)
 add_subdirectory(gnss_utilities)
 add_subdirectory(tools)
