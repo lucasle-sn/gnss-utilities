@@ -43,7 +43,7 @@ gen-doxygen:
 			-DCMAKE_BUILD_TYPE=debug \
 			-DCMAKE_C_COMPILER="clang" \
 			-DCMAKE_CXX_COMPILER="clang++" \
-			-DGNSS_UTILITIES_DOXYGEN_BUILD_ENABLED=ON
+			-Dgnss-utilities_DOXYGEN_BUILD_ENABLED=ON
 	@cmake --build ${buildDir} --target gnss-utilities-doxygen -- --no-print-directory
 	doxygen ${buildDir}/doxygen/Doxyfile
 

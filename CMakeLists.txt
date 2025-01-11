@@ -6,12 +6,12 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-option(GNSS_UTILITIES_DOXYGEN_BUILD_ENABLED "Enable Doxygen Build" OFF)
+option(gnss-utilities_DOXYGEN_BUILD_ENABLED "Enable gnss-utilities doxygen build" OFF)
 
 # Doxygen setup
-if (GNSS_UTILITIES_DOXYGEN_BUILD_ENABLED)
-  message(STATUS "Doxygen build enabled")
+if (gnss-utilities_DOXYGEN_BUILD_ENABLED)
+  message(STATUS "gnss-utilities doxygen build enabled")
   add_subdirectory(doxygen)
 else()
-  message(STATUS "Doxygen build disabled")
+  message(STATUS "gnss-utilities doxygen build disabled")
 endif()
