@@ -1,0 +1,6 @@
+[submodule "libcore"]
+	path = third_party/libcore
+	url = git@github.com:lucasle-sn/libcore.git
+[submodule "gtest"]
+	path = third_party/gtest
+	url = git@github.com:lucasle-sn/googletest.git
