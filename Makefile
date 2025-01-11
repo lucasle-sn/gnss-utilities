@@ -29,7 +29,7 @@ build-clang:
 	make build-debug C_COMPILER=clang CXX_COMPILER=clang++
 	make build-release C_COMPILER=clang CXX_COMPILER=clang++
 
-all:
+all: clean
 	make build-gcc
 	make build-clang
 
