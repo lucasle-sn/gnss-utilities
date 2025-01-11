@@ -37,6 +37,7 @@ jobs:
           cmake -S . -B ${{ env.BUILD_DIRECTORY }} \
             -DCMAKE_C_COMPILER=gcc \
             -DCMAKE_CXX_COMPILER=g++ \
+            -Dgnss-utilities_TESTING_ENABLED=ON \
             -DCODE_COVERAGE=ON \
             -DCMAKE_C_FLAGS=--coverage \
             -DCMAKE_CXX_FLAGS=--coverage
